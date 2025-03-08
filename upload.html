@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Archivo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Subir Lista de Inscriptos</h2>
+        <input type="file" id="archivoExcel" accept=".xls, .xlsx">
+        <button onclick="procesarExcel()">Subir</button>
+        <button onclick="window.location.href='verification.html'">Ir a Verificación</button>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        function procesarExcel() {
+            var archivo = document.getElementById("archivoExcel").files[0];
+            if (archivo) {
+                alert("Archivo cargado correctamente.");
+                document.getElementById("resultado").innerHTML = "Archivo subido: " + archivo.name;
+            } else {
+                alert("Por favor, seleccione un archivo.");
+            }
+        }
+    </script>
+</body>
+</html>

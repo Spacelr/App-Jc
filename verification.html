@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Ingreso</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2 id="event-name">Nombre del Evento</h2>
+        
+        <table class="event-stats">
+            <tr><td>Total Registrados:</td><td id="total-registrados">0</td></tr>
+            <tr><td>Ya Ingresaron:</td><td id="total-ingresados">0</td></tr>
+            <tr><td>Por Ingresar:</td><td id="total-por-ingresar">0</td></tr>
+        </table>
+
+        <input type="text" id="full-name" placeholder="Apellido y Nombre" disabled>
+        <input type="text" id="dni" placeholder="Ingrese su DNI" readonly>
+
+        <div id="status-message" class="status-box"></div>
+
+        <div class="keypad">
+            <button onclick="appendToDNI('1')">1</button>
+            <button onclick="appendToDNI('2')">2</button>
+            <button onclick="appendToDNI('3')">3</button>
+            <button onclick="appendToDNI('4')">4</button>
+            <button onclick="appendToDNI('5')">5</button>
+            <button onclick="appendToDNI('6')">6</button>
+            <button onclick="appendToDNI('7')">7</button>
+            <button onclick="appendToDNI('8')">8</button>
+            <button onclick="appendToDNI('9')">9</button>
+            <button onclick="clearDNI()">Borrar</button>
+            <button onclick="appendToDNI('0')">0</button>
+            <button onclick="searchDNI()">Buscar</button>
+        </div>
+    </div>
+
+    <script>
+        let registros = [];
+
+        // Cargar datos desde el archivo Excel subido (Simulación)
+        function loadEventData() {
+            registros = [
+                { dni: "12345678", nombre: "Juan Pérez", ingreso: false },
+                { dni: "87654321", nombre: "Ana López", ingreso: true },
+                { dni: "11112222", nombre: "Carlos Gómez", ingreso: false },
+                { dni: "33334444", nombre: "Laura Fernández", ingreso: false }
+            ];
+            actualizarEstadisticas();
+        }
+
+        function actualizarEstadisticas() {
+            let total = registros.length;
+            let ingresados = registros.filter(r => r.ingreso).length;
+            let porIngresar = total - ingresados;
+
+            document.getElementById("total-registrados").innerText = total;
+            document.getElementById("total-ingresados").innerText = ingresados;
+            document.getElementById("total-por-ingresar").innerText = porIngresar;
+        }
+
+        function appendToDNI(number) {
+            var dniInput = document.getElementById('dni');
+            dniInput.value += number;
+        }
+
+        function clearDNI() {
+            document.getElementById('dni').value = '';
+            document.getElementById('full-name').value = 'Apellido y Nombre';
+            document.getElementById('status-message').style.display = 'none';
+        }
+
+        function searchDNI() {
+            var dni = document.getElementById('dni').value;
+            var encontrado = registros.find(r => r.dni === dni);
+
+            if (encontrado) {
+                document.getElementById('full-name').value = encontrado.nombre;
+                var statusBox = document.getElementById("status-message");
+                statusBox.style.display = "block";
+
+                if (encontrado.ingreso) {
+                    statusBox.innerText = "Este usuario YA INGRESÓ.";
+                    statusBox.className = "status-box red-box";
+                } else {
+                    statusBox.innerText = "Ingreso permitido.";
+                    statusBox.className = "status-box green-box";
+                    encontrado.ingreso = true; // Marcar como ingresado
+                    actualizarEstadisticas(); // Refrescar estadísticas
+                }
+            } else {
+                var statusBox = document.getElementById("status-message");
+                statusBox.style.display = "block";
+                statusBox.innerText = "Usuario no encontrado.";
+                statusBox.className = "status-box yellow-box";
+            }
+        }
+
+        window.onload = loadEventData; // Cargar datos cuando se abra la página
+    </script>
+</body>
+</html>
